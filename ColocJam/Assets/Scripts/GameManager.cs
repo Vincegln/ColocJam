@@ -15,9 +15,11 @@ public class GameManager : MonoBehaviour
     public int HighScore = 0;
 
     public int Lives = 0;
-    private int _currentCombinaisonLength;
-    private float _levelTime;
-    private float _levelTotalTime;
+	private int _currentCombinaisonLength;
+	private float _levelTime;
+	private float _levelTotalTime;
+	private float _distanceEachDecrease;
+	public float _timerDecrease = 0.03f;
 
     public int CurrentLevel = 999;
     private List<int> _levelsAvailable = new List<int>();
@@ -35,11 +37,19 @@ public class GameManager : MonoBehaviour
 
     private int _currentKey; //Position touche attendue
     private KeyCode _waitedKey; // code touche attendue
+	
+	public List<Image> scenes = new List<Image>();
 
-    private int _correctKey; // booléen de merde pour savoir si on s'est trompé ou non
+	public Image fond;
+
+	public int CurrentScene;
+
+	private int _correctKey; // booléen de merde pour savoir si on s'est trompé ou non
     private int _countingDown; // booléen de merde 2 pour savoir si le temps est écoulé ou non
 
-    public GameObject[] Inputs;
+	public GameObject[] Inputs;
+
+	public GameObject Timer;
     // ----------
 
     private void Awake()
@@ -65,69 +75,63 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        for (var i = 1; i < 6; i++)
-        {
-            _levelsAvailable.Add(i);
-        }
-
+        for (var i = 1; i < 6; i++) { _levelsAvailable.Add(i);}
         HighScore = int.Parse(ReadString());
         Lives = 3;
-
-        GenerateCombinaison(NUMBEROFKEY, _currentCombinaisonLength);
-        _currentKey = 0;
-        for (var i = 0; i < Inputs.Length; i++)
-        {
-            if (i < _keyCombinaison.Length)
-            {
-                var letterDisplayed = _combinaisonNames[i];
-                Inputs[i].SetActive(true);
-                //TODO : Reset la source de l'image de chaque composant Input
-                Inputs[i].transform.Find("Text").GetComponent<Text>().text = letterDisplayed;
-            }
-            else
-            {
-                Inputs[i].SetActive(false);
-            }
-        }
-
-        _countingDown = 1;
-        StartCoroutine(CountDown(_levelTotalTime));
+	    _distanceEachDecrease = (36.0f * _timerDecrease) / _levelTotalTime;
+	    GenerateCombinaison(NUMBEROFKEY, _currentCombinaisonLength);
+	    _currentKey = 0;
+	    string letterDisplayed;
+	    for (int i = 0; i < Inputs.Length ; i++)
+	    {
+		    letterDisplayed = "";
+		    if (i < _keyCombinaison.Length)
+		    {
+			    letterDisplayed = _combinaisonNames[i];
+			    Inputs[i].SetActive(true);
+			    //TODO : Reset la source de l'image de chaque composant Input
+			    Inputs[i].transform.Find("Text").GetComponent<Text>().text = letterDisplayed;
+		    }
+		    else
+		    {
+			    Inputs[i].SetActive(false);
+		    }
+	    }
+	    
+	    _countingDown = 1;
+		StartCoroutine(CountDown(_levelTotalTime));
     }
 
-    private void Update()
-    {
-        if (_currentKey < _currentCombinaisonLength && _countingDown == 1)
-        {
-            if (_waitedKey == 0)
-            {
-                _waitedKey = _keyCombinaison[_currentKey];
-                Debug.Log(_waitedKey.ToString());
-            }
-
-            if (!Input.anyKeyDown) return;
-            if (Input.GetKeyDown(_waitedKey))
-            {
-                _correctKey = 1;
-                StartCoroutine(KeyPressing());
-            }
-            else
-            {
-                _correctKey = 2;
-                StartCoroutine(KeyPressing());
-            }
-        }
-        else
-        {
-            if (_countingDown != 1) return;
-            _countingDown = 0;
-            StopAllCoroutines();
-            //TODO : Indicateur Succès niveau
-            Debug.Log("Congrats, good end");
-
-            //TODO : gestion changement niveau + changement difficulté
-        }
-    }
-
+			if (Input.anyKeyDown)
+			{
+				if (Input.GetKeyDown(_waitedKey))
+				{
+					_correctKey = 1;
+					StartCoroutine(KeyPressing());
+				}
+				else
+				{
+					_correctKey = 2;
+					StartCoroutine(KeyPressing());
+				}
+			}
+		}
+		else
+		{
+			if (_countingDown == 1)
+			{
+				_countingDown = 0;
+				StopAllCoroutines();
+				//TODO : Indicateur Succès niveau
+				Debug.Log("Congrats, good end");
+			}
+			
+			
+			//TODO : gestion changement niveau + changement difficulté
+		}
+			
+	}
+	
     public void IncreaseScore(int amount)
     {
         Score += amount;
@@ -345,55 +349,29 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
             _waitedKey = 0;
 //			_currentKey++; TODO : Adapter au mode de jeu sélectionné
-        }
-    }
-
-    private IEnumerator CountDown(float timeToWaitIntoScene)
-    {
-        if (_countingDown != 1) yield break;
-        _levelTime = timeToWaitIntoScene;
-        while (_levelTime > 0.0f)
-        {
-            _levelTime -= 0.1f;
-            Debug.Log(_levelTime);
-            yield return new WaitForSeconds(0.1f);
-        }
-
-        _countingDown = 2;
-        _levelTime = 0.0f;
-        //TODO : Indicateur d'échec de niveau
-        Debug.Log("You noob, time's up end");
-        yield return new WaitForSeconds(0.01f);
-        _correctKey = 0;
-        _waitedKey = 0;
-    }
-
-    void WriteString(string lHighscore)
-    {
-        const string path = "Assets/Resources/highscore.txt";
-
-        //Write some text to the test.txt file
-        var writer = new StreamWriter(path, true);
-        writer.WriteLine(lHighscore);
-        writer.Close();
-
-        //Re-import the file to update the reference in the editor
-        AssetDatabase.ImportAsset(path);
-        var asset = (TextAsset) Resources.Load("highscore");
-
-        //Print the text from the file
-        Debug.Log(asset.text);
-    }
-
-    public string ReadString()
-    {
-        const string path = "Assets/Resources/highscore.txt";
-
-        //Read the text from directly from the test.txt file
-        var reader = new StreamReader(path);
-        var highscore = reader.ReadToEnd();
-        Debug.Log(highscore);
-        reader.Close();
-        return highscore;
-    }
+		}
+	}
+	
+	private IEnumerator CountDown(float timeToWaitIntoScene)
+	{
+		if (_countingDown == 1)
+		{
+			_levelTime = timeToWaitIntoScene;
+			while (_levelTime > 0.0f)
+			{
+				_levelTime -= _timerDecrease;
+				Timer.transform.position += new Vector3(_distanceEachDecrease,0,0);
+				Debug.Log(_levelTime);
+				yield return new WaitForSeconds(_timerDecrease);
+			}
+			_countingDown = 2;
+			_levelTime = 0.0f;
+			//TODO : Indicateur d'échec de niveau
+			Debug.Log("You noob, time's up end");
+			yield return new WaitForSeconds(0.01f);
+			_correctKey = 0;
+			_waitedKey = 0;
+		}
+	}
+	
 }
