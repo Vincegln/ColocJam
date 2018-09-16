@@ -33,9 +33,9 @@ public class GameManager : MonoBehaviour
     private int _currentKey; //Position touche attendue
     private KeyCode _waitedKey; // code touche attendue
 	
-	public List<Image> scenes = new List<Image>();
+	public List<Sprite> scenes;
 	public Image fond;
-	private Image CurrentScene;
+	private Sprite CurrentScene;
 	
 	private int _correctKey; // booléen de merde pour savoir si on s'est trompé ou non
     private int _countingDown; // booléen de merde 2 pour savoir si le temps est écoulé ou non
@@ -174,15 +174,16 @@ public class GameManager : MonoBehaviour
 
     public void ChangeLevel()
     {
-        SceneManager.LoadScene("Level1");
-	    /*Image transitionScene;
+	    SceneManager.LoadScene("Level1");
+	    /*Sprite transitionScene;
 	    transitionScene = CurrentScene;
 	    while (CurrentScene == transitionScene)
          {
-		    CurrentScene = scenes[Random.Range(0, scenes.Count)];
-		 }
+		    //CurrentScene = scenes[Random.Range(0, scenes.Count)];
+	         CurrentScene = scenes[1];
+         }
 
-	    fond.sprite = CurrentScene.sprite;*/
+	    fond.sprite = CurrentScene;*/
 	    
     }
 

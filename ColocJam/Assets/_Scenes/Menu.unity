@@ -1098,8 +1098,13 @@ MonoBehaviour:
   Score: 0
   HighScore: 36
   Lives: 0
-  CurrentLevel: 1
+  _timerDecrease: 0.03
+  scenes:
+  - {fileID: 21300000, guid: 8faf1a2767421504692529f1291417cb, type: 3}
+  - {fileID: 21300000, guid: 2921e5f704d698f4095703bcc506d37c, type: 3}
+  fond: {fileID: 0}
   Inputs: []
+  Timer: {fileID: 0}
 --- !u!1 &1603672876
 GameObject:
   m_ObjectHideFlags: 0
