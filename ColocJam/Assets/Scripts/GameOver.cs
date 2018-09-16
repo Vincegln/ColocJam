@@ -7,6 +7,7 @@ public class GameOver : MonoBehaviour
 {
     public Text Score;
     public Text Highscore;
+    public Text NewHighScore;
     
     public Button RetryButton;
     public Button MenuButton;
@@ -19,7 +20,8 @@ public class GameOver : MonoBehaviour
         RetryButton.onClick.AddListener(RetryHandleClick);
         MenuButton.onClick.AddListener(MenuHandleClick);
         Score.text = "Score : " + Database.Score;
-        Highscore.text = "Highscore :\r\n" + ReadString();
+        CheckHighscores();
+        Highscore.text = "Highscore :\r\n" + PlayerPrefs.GetInt ("highscore",0);
     }
     
     public void RetryHandleClick()
@@ -36,15 +38,12 @@ public class GameOver : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
     
-    public string ReadString()
+    private void CheckHighscores()
     {
-        const string path = "Assets/Resources/highscore.txt";
-
-        //Read the text from directly from the test.txt file
-        var reader = new StreamReader(path);
-        var highscore = reader.ReadToEnd();
-        Debug.Log(highscore);
-        reader.Close();
-        return highscore;
+        if (PlayerPrefs.GetInt ("highscore",0) < Database.Score)
+        {
+            NewHighScore.gameObject.SetActive(true);
+            PlayerPrefs.SetInt ("highscore",Database.Score);
+        }
     }
 }
