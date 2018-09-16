@@ -358,6 +358,7 @@ public class GameManager : MonoBehaviour
             _correctKey = 0;
             //TODO : Mettre à jour la source image avec touche Fail
             //TODO : Mettre en place le lancement d'un son d'échec de frappe
+	        GetComponent<AudioSource>().Play(); //joue le son associé à l’objet
             yield return new WaitForSeconds(0.1f);
             _waitedKey = 0;
 //			_currentKey++; TODO : Adapter au mode de jeu sélectionné
