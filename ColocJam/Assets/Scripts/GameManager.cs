@@ -67,18 +67,15 @@ public class GameManager : MonoBehaviour
     public void Start()
     {
         for (var i = 1; i < 6; i++) { _levelsAvailable.Add(i);}
-        for (var i = 1; i < 3; i++) { HighScores[i]=0;}
         Lives = 3;
 	    
 	    GenerateCombinaison(NUMBEROFKEY, _currentCombinaisonLength);
 	    _currentKey = 0;
-	    string letterDisplayed;
-	    for (int i = 0; i < Inputs.Length ; i++)
+	    for (var i = 0; i < Inputs.Length ; i++)
 	    {
-		    letterDisplayed = "";
 		    if (i < _keyCombinaison.Length)
 		    {
-			    letterDisplayed = _combinaisonNames[i];
+			    var letterDisplayed = _combinaisonNames[i];
 			    Inputs[i].SetActive(true);
 			    //TODO : Reset la source de l'image de chaque composant Input
 			    Inputs[i].transform.Find("Text").GetComponent<Text>().text = letterDisplayed;
@@ -92,8 +89,8 @@ public class GameManager : MonoBehaviour
 	    _countingDown = 1;
 		StartCoroutine(CountDown(_levelTotalTime));
     }
-    
-	void Update()
+
+	private void Update()
 	{
 		if (_currentKey < _currentCombinaisonLength && _countingDown == 1)
 		{
@@ -104,30 +101,26 @@ public class GameManager : MonoBehaviour
 			
 			}
 
-			if (Input.anyKeyDown)
+			if (!Input.anyKeyDown) return;
+			if (Input.GetKeyDown(_waitedKey))
 			{
-				if (Input.GetKeyDown(_waitedKey))
-				{
-					_correctKey = 1;
-					StartCoroutine(KeyPressing());
-				}
-				else
-				{
-					_correctKey = 2;
-					StartCoroutine(KeyPressing());
-				}
+				_correctKey = 1;
+				StartCoroutine(KeyPressing());
+			}
+			else
+			{
+				_correctKey = 2;
+				StartCoroutine(KeyPressing());
 			}
 		}
 		else
 		{
-			if (_countingDown == 1)
-			{
-				_countingDown = 0;
-				StopAllCoroutines();
-				//TODO : Indicateur Succès niveau
-				Debug.Log("Congrats, good end");
-			}
-			
+			if (_countingDown != 1) return;
+			_countingDown = 0;
+			StopAllCoroutines();
+			//TODO : Indicateur Succès niveau
+			Debug.Log("Congrats, good end");
+
 			//TODO : gestion changement niveau + changement difficulté
 		}
 			
@@ -313,8 +306,8 @@ public class GameManager : MonoBehaviour
 		_keyCombinaison = new KeyCode[combinaisonLength];
 		_combinaisonNames = new string[combinaisonLength];
 		int qteGen;
-		bool result = true;
-		for (int i = 0; i < combinaisonLength; i++)
+		var result = true;
+		for (var i = 0; i < combinaisonLength; i++)
 		{
 			qteGen = Random.Range(1, nbChar + 1);
 			result = GetKeyCode(qteGen, i);
@@ -353,23 +346,21 @@ public class GameManager : MonoBehaviour
 	
 	private IEnumerator CountDown(float timeToWaitIntoScene)
 	{
-		if (_countingDown == 1)
+		if (_countingDown != 1) yield break;
+		_levelTime = timeToWaitIntoScene;
+		while (_levelTime > 0.0f)
 		{
-			_levelTime = timeToWaitIntoScene;
-			while (_levelTime > 0.0f)
-			{
-				_levelTime -= 0.1f;
-				Debug.Log(_levelTime);
-				yield return new WaitForSeconds(0.1f);
-			}
-			_countingDown = 2;
-			_levelTime = 0.0f;
-			//TODO : Indicateur d'échec de niveau
-			Debug.Log("You noob, time's up end");
-			yield return new WaitForSeconds(0.01f);
-			_correctKey = 0;
-			_waitedKey = 0;
+			_levelTime -= 0.1f;
+			Debug.Log(_levelTime);
+			yield return new WaitForSeconds(0.1f);
 		}
+		_countingDown = 2;
+		_levelTime = 0.0f;
+		//TODO : Indicateur d'échec de niveau
+		Debug.Log("You noob, time's up end");
+		yield return new WaitForSeconds(0.01f);
+		_correctKey = 0;
+		_waitedKey = 0;
 	}
 	
 }
