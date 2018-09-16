@@ -18,7 +18,7 @@ public class HudManager : MonoBehaviour
 
 	public void Refresh()
 	{
-		ScoreLabel.text = "Score : " + GameManager.Instance.Score;
+		ScoreLabel.text = "Score : " + Database.Score;
 	}
 	
 	public void ExitHandleClick()
