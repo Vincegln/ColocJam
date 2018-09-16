@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour {
     public int Lives = 0;
 	private int _currentCombinaisonLength;
 	private float _levelTime;
+	private float _levelTotalTime;
     
     public int CurrentLevel = 1;
     private List<int> _levelsAvailable = new List<int>();
@@ -48,7 +49,8 @@ public class GameManager : MonoBehaviour {
             FillKeyCodesDictionnary();
             FillKeyNamesDictionnary();
 	        _currentCombinaisonLength = 1;
-	        _levelTime = 10.0f;
+	        _levelTotalTime = 10.0f;
+	        _levelTime = 0.0f;
         }
         else if (Instance != this)
         {
@@ -84,7 +86,7 @@ public class GameManager : MonoBehaviour {
 	    }
 	    
 	    _countingDown = 1;
-		StartCoroutine(CountDown(_levelTime));
+		StartCoroutine(CountDown(_levelTotalTime));
     }
     
 	void Update()
@@ -117,6 +119,7 @@ public class GameManager : MonoBehaviour {
 			if (_countingDown == 1)
 			{
 				_countingDown = 0;
+				StopAllCoroutines();
 				//TODO : Indicateur Succès niveau
 				Debug.Log("Congrats, good end");
 			}
@@ -349,10 +352,17 @@ public class GameManager : MonoBehaviour {
 	
 	private IEnumerator CountDown(float timeToWaitIntoScene)
 	{
-		yield return new WaitForSeconds(timeToWaitIntoScene);
 		if (_countingDown == 1)
 		{
+			_levelTime = timeToWaitIntoScene;
+			while (_levelTime > 0.0f)
+			{
+				_levelTime -= 0.1f;
+				Debug.Log(_levelTime);
+				yield return new WaitForSeconds(0.1f);
+			}
 			_countingDown = 2;
+			_levelTime = 0.0f;
 			//TODO : Indicateur d'échec de niveau
 			Debug.Log("You noob, time's up end");
 			yield return new WaitForSeconds(0.01f);
