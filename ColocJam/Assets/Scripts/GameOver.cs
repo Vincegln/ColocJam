@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameOver : MonoBehaviour
@@ -14,19 +15,19 @@ public class GameOver : MonoBehaviour
     {
         RetryButton.onClick.AddListener(RetryHandleClick);
         MenuButton.onClick.AddListener(MenuHandleClick);
-        Score.text = "Score : " + GameManager.Instance.Score;
+        Score.text = "Score : " + Database.Score;
         Highscore.text = "Highscore :\r\n" + ReadString();
     }
     
     public void RetryHandleClick()
     {
-        GameManager.Instance.Score = 0;
-        GameManager.Instance.ChangeLevel();
+        Database.Score = 0;
+        SceneManager.LoadScene("Level1");
     }
 
     public void MenuHandleClick()
     {
-        Application.Quit();
+        SceneManager.LoadScene("Menu");
     }
     
     public string ReadString()
