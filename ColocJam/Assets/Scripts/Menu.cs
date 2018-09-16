@@ -16,6 +16,7 @@ public class Menu : MonoBehaviour
     {
         Database.CombinaisonLength = COMBINAISONINIT;
         Database.LevelTime = LEVELTIMEINIT;
+        Database.Lives = 3;
         PlayButton.onClick.AddListener(PlayHandleClick);
         ExitButton.onClick.AddListener(ExitHandleClick);
         Highscore.text = "Highscore :\r\n" + ReadString();
