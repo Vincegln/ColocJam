@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -15,10 +16,14 @@ public class GameManager : MonoBehaviour
     public int HighScore = 0;
 
     public int Lives = 0;
+	private int _currentCombinaisonLength;
+	private float _levelTime;
+	private float _levelTotalTime;
 
     public int CurrentLevel = 999;
     private List<int> _levelsAvailable = new List<int>();
     private List<int> _levelsDone = new List<int>();
+	
     // --------
     
     private const int NUMBEROFKEY = 55; // nb max de touches
@@ -35,7 +40,7 @@ public class GameManager : MonoBehaviour
     private int _correctKey; // booléen de merde pour savoir si on s'est trompé ou non
     private int _countingDown; // booléen de merde 2 pour savoir si le temps est écoulé ou non
 
-	public GameObject[] inputs;
+	public GameObject[] Inputs;
     // ----------
     
     private void Awake()
@@ -47,6 +52,9 @@ public class GameManager : MonoBehaviour
             _keyNamesDictionnary = new Dictionary<KeyCode, string>();
             FillKeyCodesDictionnary();
             FillKeyNamesDictionnary();
+	        _currentCombinaisonLength = 1;
+	        _levelTotalTime = 10.0f;
+	        _levelTime = 0.0f;
         }
         else if (Instance != this)
         {
@@ -62,54 +70,67 @@ public class GameManager : MonoBehaviour
         for (var i = 1; i < 3; i++) { HighScores[i]=0;}
         Lives = 3;
 	    
-	    generateCombinaison(NUMBEROFKEY, 8);
+	    GenerateCombinaison(NUMBEROFKEY, _currentCombinaisonLength);
 	    _currentKey = 0;
 	    string letterDisplayed;
-	    for (int i = 0; i < 14 ; i++)
+	    for (int i = 0; i < Inputs.Length ; i++)
 	    {
 		    letterDisplayed = "";
 		    if (i < _keyCombinaison.Length)
 		    {
 			    letterDisplayed = _combinaisonNames[i];
-			    inputs[i].SetActive(true);
+			    Inputs[i].SetActive(true);
 			    //TODO : Reset la source de l'image de chaque composant Input
-			    inputs[i].transform.Find("Text").GetComponent<Text>().text = letterDisplayed;
+			    Inputs[i].transform.Find("Text").GetComponent<Text>().text = letterDisplayed;
 		    }
 		    else
 		    {
-			    inputs[i].SetActive(false);
+			    Inputs[i].SetActive(false);
 		    }
-
-		    
 	    }
+	    
+	    _countingDown = 1;
+		StartCoroutine(CountDown(_levelTotalTime));
     }
     
 	void Update()
 	{
-		if (_waitedKey == 0)
+		if (_currentKey < _currentCombinaisonLength && _countingDown == 1)
 		{
-//			_countingDown = 1;
-//			StartCoroutine(CountDown());
-
-			_waitedKey = _keyCombinaison[_currentKey];
-			Debug.Log(_waitedKey.ToString());
-			//displayBox.GetComponent<Text>().text = _combinaisonNames[_currentKey];
+			if (_waitedKey == 0)
+			{
+				_waitedKey = _keyCombinaison[_currentKey];
+				Debug.Log(_waitedKey.ToString());
 			
-		}
+			}
 
-		if (Input.anyKeyDown)
+			if (Input.anyKeyDown)
+			{
+				if (Input.GetKeyDown(_waitedKey))
+				{
+					_correctKey = 1;
+					StartCoroutine(KeyPressing());
+				}
+				else
+				{
+					_correctKey = 2;
+					StartCoroutine(KeyPressing());
+				}
+			}
+		}
+		else
 		{
-			if (Input.GetKeyDown(_waitedKey))
+			if (_countingDown == 1)
 			{
-				_correctKey = 1;
-				StartCoroutine(KeyPressing());
+				_countingDown = 0;
+				StopAllCoroutines();
+				//TODO : Indicateur Succès niveau
+				Debug.Log("Congrats, good end");
 			}
-			else
-			{
-				_correctKey = 2;
-				StartCoroutine(KeyPressing());
-			}
-		}	
+			
+			//TODO : gestion changement niveau + changement difficulté
+		}
+			
 	}
 	
     public void IncreaseScore(int amount)
@@ -287,7 +308,7 @@ public class GameManager : MonoBehaviour
 		return _keyNamesDictionnary.TryGetValue(key, out _combinaisonNames[element]);
 	}
 
-	private bool generateCombinaison(int nbChar, int combinaisonLength)
+	private bool GenerateCombinaison(int nbChar, int combinaisonLength)
 	{
 		_keyCombinaison = new KeyCode[combinaisonLength];
 		_combinaisonNames = new string[combinaisonLength];
@@ -307,28 +328,47 @@ public class GameManager : MonoBehaviour
 		return result;
 	}
 	
+// -------- Coroutines --------
+	
 	private IEnumerator KeyPressing()
 	{
 		if (_correctKey == 1)
 		{
-//			_countingDown = 2;
 			_correctKey = 0;
 			//TODO : Mettre à jour la source image avec touche validée
 			yield return new WaitForSeconds(0.01f);
 			_waitedKey = 0;
 			_currentKey++;
-//			_countingDown = 1;
 		}
 		else if (_correctKey == 2)
 		{
-//			_countingDown = 2;
 			_correctKey = 0;
 			//TODO : Mettre à jour la source image avec touche Fail
 			//TODO : Mettre en place le lancement d'un son d'échec de frappe
 			yield return new WaitForSeconds(0.1f);
 			_waitedKey = 0;
-//			_currentKey++;
-//			_countingDown = 1;
+//			_currentKey++; TODO : Adapter au mode de jeu sélectionné
+		}
+	}
+	
+	private IEnumerator CountDown(float timeToWaitIntoScene)
+	{
+		if (_countingDown == 1)
+		{
+			_levelTime = timeToWaitIntoScene;
+			while (_levelTime > 0.0f)
+			{
+				_levelTime -= 0.1f;
+				Debug.Log(_levelTime);
+				yield return new WaitForSeconds(0.1f);
+			}
+			_countingDown = 2;
+			_levelTime = 0.0f;
+			//TODO : Indicateur d'échec de niveau
+			Debug.Log("You noob, time's up end");
+			yield return new WaitForSeconds(0.01f);
+			_correctKey = 0;
+			_waitedKey = 0;
 		}
 	}
 	
