@@ -1,6 +1,6 @@
 ﻿public static class Database
 {
-	private static int combinaisonLength, score, lives;
+	private static int combinaisonLength, score, lives, sceneNumber;
 	private static float levelTime;
 
 	public static int CombinaisonLength 
@@ -12,6 +12,18 @@
 		set 
 		{
 			combinaisonLength = value;
+		}
+	}
+	
+	public static int SceneNumber 
+	{
+		get 
+		{
+			return sceneNumber;
+		}
+		set 
+		{
+			sceneNumber = value;
 		}
 	}
 	

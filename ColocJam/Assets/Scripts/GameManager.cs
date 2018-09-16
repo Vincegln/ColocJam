@@ -1,24 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-	private int _currentCombinaisonLength;
-	private float _levelTime;
-	private float _levelTotalTime;
-	private float _distanceEachDecrease;
-	public float _timerDecrease = 0.03f;
+    private int _currentCombinaisonLength;
+    private float _levelTime;
+    private float _levelTotalTime;
+    private float _distanceEachDecrease;
+    public float _timerDecrease = 0.03f;
 
     // --------
 
-    private const int NUMBEROFKEY = 55; // nb max de touches
+    private const int NUMBEROFKEY = 54; // nb max de touches
 
     private Dictionary<int, KeyCode> _keyCodesDictionnary;
     private Dictionary<KeyCode, string> _keyNamesDictionnary;
@@ -29,128 +26,128 @@ public class GameManager : MonoBehaviour
     private int _currentKey; //Position touche attendue
     private KeyCode _waitedKey; // code touche attendue
 	
-	public List<Sprite> scenes;
-	public Image fond;
-	private Sprite CurrentScene;
+    public List<Sprite> scenes;
+    public Image fond;
+    private Sprite CurrentScene;
 	
-	private int _correctKey; // booléen de merde pour savoir si on s'est trompé ou non
+    private int _correctKey; // booléen de merde pour savoir si on s'est trompé ou non
     private int _countingDown; // booléen de merde 2 pour savoir si le temps est écoulé ou non
 
-	public GameObject[] Inputs;
+    public GameObject[] Inputs;
 
-	public GameObject Timer;
+    public GameObject Timer;
     // ----------
 
     private void Awake()
     {
-		_keyCodesDictionnary = new Dictionary<int, KeyCode>();
-		_keyNamesDictionnary = new Dictionary<KeyCode, string>();
-		FillKeyCodesDictionnary();
-		FillKeyNamesDictionnary();
+        _keyCodesDictionnary = new Dictionary<int, KeyCode>();
+        _keyNamesDictionnary = new Dictionary<KeyCode, string>();
+        FillKeyCodesDictionnary();
+        FillKeyNamesDictionnary();
 
-		_currentCombinaisonLength = Database.CombinaisonLength;
-		_levelTotalTime = Database.LevelTime;
-	    Debug.Log("combiL = "+_currentCombinaisonLength);
-	    Debug.Log("totalTime = "+_levelTotalTime);
-		
-		_levelTime = 0.0f;
+        _currentCombinaisonLength = Database.CombinaisonLength;
+        _levelTotalTime = Database.LevelTime;
+
+        Debug.Log("Database charged = "+Database.SceneNumber);
+        fond.sprite = scenes[Database.SceneNumber];
+        Debug.Log(fond.sprite.name);
+        _levelTime = 0.0f;
         
     }
 
     private void Start()
     {
-	    for (int i = 2; i >= 0; i--)
-	    {
-		    if (Database.Lives <= i)
-		    {
-			    GameObject.Find("Life"+(i)).SetActive(false);
-		    }
-	    }
+        for (int i = 2; i >= 0; i--)
+        {
+            if (Database.Lives <= i)
+            {
+                GameObject.Find("Life"+(i)).SetActive(false);
+            }
+        }
+        
         _distanceEachDecrease = (36.0f * _timerDecrease) / _levelTotalTime;
-	    GenerateCombinaison(NUMBEROFKEY, _currentCombinaisonLength);
-	    _currentKey = 0;
-	    string letterDisplayed;
-	    for (int i = 0; i < Inputs.Length ; i++)
-	    {
-		    letterDisplayed = "";
-		    if (i < _keyCombinaison.Length)
-		    {
-			    letterDisplayed = _combinaisonNames[i];
-			    Inputs[i].SetActive(true);
-			    //TODO : Reset la source de l'image de chaque composant Input
-			    Inputs[i].transform.Find("Text").GetComponent<Text>().text = letterDisplayed;
-		    }
-		    else
-		    {
-			    Inputs[i].SetActive(false);
-		    }
-	    }
+        GenerateCombinaison(NUMBEROFKEY, _currentCombinaisonLength);
+        _currentKey = 0;
+        string letterDisplayed;
+        for (int i = 0; i < Inputs.Length ; i++)
+        {
+            letterDisplayed = "";
+            if (i < _keyCombinaison.Length)
+            {
+                letterDisplayed = _combinaisonNames[i];
+                Inputs[i].SetActive(true);
+                //TODO : Reset la source de l'image de chaque composant Input
+                Inputs[i].transform.Find("Text").GetComponent<Text>().text = letterDisplayed;
+            }
+            else
+            {
+                Inputs[i].SetActive(false);
+            }
+        }
 	    
-	    _countingDown = 1;
-		StartCoroutine(CountDown(_levelTotalTime));
+        _countingDown = 1;
+        StartCoroutine(CountDown(_levelTotalTime));
     }
 
     
-	private void Update()
-	{
-		if (Database.Lives == 0)
-		{
-			StopAllCoroutines();
-			SceneManager.LoadScene("GameOver");
-		}
-		else
-		{
-			if (_currentKey < _currentCombinaisonLength && _countingDown == 1)
-			{
-				if (_waitedKey == 0)
-				{
-					_waitedKey = _keyCombinaison[_currentKey];
-					Debug.Log(_waitedKey.ToString());
+    private void Update()
+    {
+        if (Database.Lives == 0)
+        {
+            StopAllCoroutines();
+            SceneManager.LoadScene("GameOver");
+        }
+        else
+        {
+            if (_currentKey < _currentCombinaisonLength && _countingDown == 1)
+            {
+                if (_waitedKey == 0)
+                {
+                    _waitedKey = _keyCombinaison[_currentKey];
+                    Debug.Log(_waitedKey.ToString());
 			
-				}
-				if (Input.anyKeyDown)
-				{
-					if (Input.GetKeyDown(_waitedKey))
-					{
-						_correctKey = 1;
-						StartCoroutine(KeyPressing());
-					}
-					else
-					{
-						_correctKey = 2;
-						StartCoroutine(KeyPressing());
-					}
-				}
-			}
-			else
-			{
-				if (_countingDown == 1)
-				{
-					_countingDown = 0;
-					StopAllCoroutines();
-					//TODO : Indicateur Succès niveau
-					Debug.Log("Congrats, good end");
-					IncreaseScore(1);
-					if (Database.LevelTime < 5.0f)
-					{
-						Database.CombinaisonLength += 1;
-						Database.LevelTime = 10.0f;
-					}
-					else
-					{
-						Database.LevelTime -= 2.0f;
-					}
-					ChangeLevel();
-				}
-				else if (_countingDown == 2)
-				{
-					DecreaseLife();
-				}
+                }
+                if (Input.anyKeyDown)
+                {
+                    if (Input.GetKeyDown(_waitedKey))
+                    {
+                        _correctKey = 1;
+                        StartCoroutine(KeyPressing());
+                    }
+                    else
+                    {
+                        _correctKey = 2;
+                        StartCoroutine(KeyPressing());
+                    }
+                }
+            }
+            else
+            {
+                if (_countingDown == 1)
+                {
+                    _countingDown = 0;
+                    StopAllCoroutines();
+                    IncreaseScore(1);
+                    if (Database.LevelTime < 5.0f)
+                    {
+                        Database.CombinaisonLength += 1;
+                        Database.LevelTime = 10.0f;
+                    }
+                    else
+                    {
+                        Database.LevelTime -= 2.0f;
+                    }
+                    ChangeLevel();
+                }
+                else if (_countingDown == 2)
+                {
+                    DecreaseLife();
+                }
 			
-			}
-		}
+            }
+        }
 			
-	}
+    }
 	
     public void IncreaseScore(int amount)
     {
@@ -161,8 +158,8 @@ public class GameManager : MonoBehaviour
 
     public void DecreaseLife()
     {
-	    GameObject.Find("Life" + (Database.Lives-1)).SetActive(false);
-	    Database.Lives -= 1;
+        GameObject.Find("Life" + (Database.Lives-1)).SetActive(false);
+        Database.Lives -= 1;
         if (Database.Lives == 0)
         {
             CheckHighscores();
@@ -173,23 +170,19 @@ public class GameManager : MonoBehaviour
     {
         if (int.Parse(ReadString()) < Database.Score)
         {
-	        WriteString();
+            WriteString();
         }
     }
 
     public void ChangeLevel()
     {
-	    SceneManager.LoadScene("Level1");
-	    /*Sprite transitionScene;
-	    transitionScene = CurrentScene;
-	    while (CurrentScene == transitionScene)
-         {
-		    //CurrentScene = scenes[Random.Range(0, scenes.Count)];
-	         CurrentScene = scenes[1];
-         }
-
-	    fond.sprite = CurrentScene;*/
-	    
+        int currentIndex = Database.SceneNumber;
+        while (Database.SceneNumber == currentIndex)
+        {
+            Database.SceneNumber = Random.Range(0, scenes.Count);
+        }
+        SceneManager.LoadScene("Level1");
+        
     }
 
     private void FillKeyCodesDictionnary()
@@ -243,12 +236,11 @@ public class GameManager : MonoBehaviour
         _keyCodesDictionnary.Add(47, KeyCode.F11);
         _keyCodesDictionnary.Add(48, KeyCode.F12);
         _keyCodesDictionnary.Add(49, KeyCode.Space);
-        _keyCodesDictionnary.Add(50, KeyCode.Backspace);
-        _keyCodesDictionnary.Add(51, KeyCode.Return);
-        _keyCodesDictionnary.Add(52, KeyCode.RightArrow);
-        _keyCodesDictionnary.Add(53, KeyCode.LeftArrow);
-        _keyCodesDictionnary.Add(54, KeyCode.UpArrow);
-        _keyCodesDictionnary.Add(55, KeyCode.DownArrow);
+        _keyCodesDictionnary.Add(50, KeyCode.Return);
+        _keyCodesDictionnary.Add(51, KeyCode.RightArrow);
+        _keyCodesDictionnary.Add(52, KeyCode.LeftArrow);
+        _keyCodesDictionnary.Add(53, KeyCode.UpArrow);
+        _keyCodesDictionnary.Add(54, KeyCode.DownArrow);
     }
 
     private void FillKeyNamesDictionnary()
@@ -302,7 +294,6 @@ public class GameManager : MonoBehaviour
         _keyNamesDictionnary.Add(KeyCode.F11, "F11");
         _keyNamesDictionnary.Add(KeyCode.F12, "F12");
         _keyNamesDictionnary.Add(KeyCode.Space, "␣");
-        _keyNamesDictionnary.Add(KeyCode.Backspace, "⌫");
         _keyNamesDictionnary.Add(KeyCode.Return, "↵");
         _keyNamesDictionnary.Add(KeyCode.RightArrow, "→");
         _keyNamesDictionnary.Add(KeyCode.LeftArrow, "←");
@@ -354,64 +345,62 @@ public class GameManager : MonoBehaviour
         }
         else if (_correctKey == 2)
         {
-	        _correctKey = 0;
+            _correctKey = 0;
             //TODO : Mettre à jour la source image avec touche Fail
             //TODO : Mettre en place le lancement d'un son d'échec de frappe
-	        GetComponent<AudioSource>().Play(); //joue le son associé à l’objet
-	        yield return new WaitForSeconds(0.01f);
-	        _waitedKey = 0;
-	        DecreaseLife();
+            GetComponent<AudioSource>().Play(); //joue le son associé à l’objet
+            yield return new WaitForSeconds(0.01f);
+            _waitedKey = 0;
+            DecreaseLife();
             //yield return new WaitForSeconds(0.1f);
             
 //			_currentKey++; TODO : Adapter au mode de jeu sélectionné
-		}
-	}
+        }
+    }
 	
-	private IEnumerator CountDown(float timeToWaitIntoScene)
-	{
-		if (_countingDown == 1)
-		{
-			_levelTime = timeToWaitIntoScene;
-			while (_levelTime > 0.0f)
-			{
-				_levelTime -= _timerDecrease;
-				Timer.transform.position += new Vector3(_distanceEachDecrease,0,0);
-				yield return new WaitForSeconds(_timerDecrease);
-			}
-			_countingDown = 2;
-			_levelTime = 0.0f;
-			//TODO : Indicateur d'échec de niveau
-			Debug.Log("You noob, time's up end");
-			yield return new WaitForSeconds(0.01f);
-			_correctKey = 0;
-			_waitedKey = 0;
-		}
-	}
+    private IEnumerator CountDown(float timeToWaitIntoScene)
+    {
+        if (_countingDown == 1)
+        {
+            _levelTime = timeToWaitIntoScene;
+            while (_levelTime > 0.0f)
+            {
+                _levelTime -= _timerDecrease;
+                Timer.transform.position += new Vector3(_distanceEachDecrease,0,0);
+                yield return new WaitForSeconds(_timerDecrease);
+            }
+            _countingDown = 2;
+            _levelTime = 0.0f;
+            yield return new WaitForSeconds(0.01f);
+            _correctKey = 0;
+            _waitedKey = 0;
+        }
+    }
 	
-	void WriteString()
-	{
-		const string path = "Assets/Resources/highscore.txt";
+    void WriteString()
+    {
+        const string path = "Assets/Resources/highscore.txt";
 
-		//Write some text to the test.txt file
-		File.WriteAllText(path,Database.Score.ToString());
+        //Write some text to the test.txt file
+        File.WriteAllText(path,Database.Score.ToString());
 
-		//Re-import the file to update the reference in the editor
-		Resources.Load(path); 
-		var asset = (TextAsset) Resources.Load("highscore");
+        //Re-import the file to update the reference in the editor
+        Resources.Load(path); 
+        var asset = (TextAsset) Resources.Load("highscore");
 
-		//Print the text from the file
-		Debug.Log(asset.text);
-	}
+        //Print the text from the file
+//        Debug.Log(asset.text);
+    }
 
-	public string ReadString()
-	{
-		const string path = "Assets/Resources/highscore.txt";
+    public string ReadString()
+    {
+        const string path = "Assets/Resources/highscore.txt";
 
-		//Read the text from directly from the test.txt file
-		var reader = new StreamReader(path);
-		var highscore = reader.ReadToEnd();
-		Debug.Log(highscore);
-		reader.Close();
-		return highscore;
-	}
+        //Read the text from directly from the test.txt file
+        var reader = new StreamReader(path);
+        var highscore = reader.ReadToEnd();
+//        Debug.Log(highscore);
+        reader.Close();
+        return highscore;
+    }
 }
