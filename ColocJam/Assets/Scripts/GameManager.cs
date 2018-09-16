@@ -21,10 +21,6 @@ public class GameManager : MonoBehaviour
 	private float _distanceEachDecrease;
 	public float _timerDecrease = 0.03f;
 
-    public int CurrentLevel = 999;
-    private List<int> _levelsAvailable = new List<int>();
-    private List<int> _levelsDone = new List<int>();
-
     // --------
 
     private const int NUMBEROFKEY = 55; // nb max de touches
@@ -75,7 +71,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        for (var i = 1; i < 6; i++) { _levelsAvailable.Add(i);}
         HighScore = int.Parse(ReadString());
         Lives = 3;
 	    _distanceEachDecrease = (36.0f * _timerDecrease) / _levelTotalTime;
@@ -135,6 +130,7 @@ public class GameManager : MonoBehaviour
 				StopAllCoroutines();
 				//TODO : Indicateur Succès niveau
 				Debug.Log("Congrats, good end");
+				ChangeLevel();
 			}
 			
 			
@@ -186,10 +182,7 @@ public class GameManager : MonoBehaviour
 
     public void ChangeLevel()
     {
-        _levelsDone.Add(CurrentLevel);
-        var levelsToDo = _levelsAvailable.Except(_levelsDone).ToList();
-        CurrentLevel = levelsToDo[Random.Range(0, levelsToDo.Count)];
-        SceneManager.LoadScene("Level" + CurrentLevel);
+        SceneManager.LoadScene("Level1");
     }
 
     private void FillKeyCodesDictionnary()
@@ -395,7 +388,7 @@ public class GameManager : MonoBehaviour
 		writer.Close();
 
 		//Re-import the file to update the reference in the editor
-		AssetDatabase.ImportAsset(path); 
+		Resources.Load(path); 
 		var asset = (TextAsset) Resources.Load("highscore");
 
 		//Print the text from the file

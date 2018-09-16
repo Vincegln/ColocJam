@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Menu : MonoBehaviour
@@ -12,8 +13,7 @@ public class Menu : MonoBehaviour
     {
         PlayButton.onClick.AddListener(PlayHandleClick);
         ExitButton.onClick.AddListener(ExitHandleClick);
-        GameManager.Instance.CurrentLevel = 999;
-        Highscore.text = "Highscore :\r\n" + GameManager.Instance.ReadString();
+        Highscore.text = "Highscore :\r\n" + ReadString();
     }
 
     public void PlayHandleClick()
@@ -24,5 +24,17 @@ public class Menu : MonoBehaviour
     public void ExitHandleClick()
     {
         Application.Quit();
+    }
+
+    public string ReadString()
+    {
+        const string path = "Assets/Resources/highscore.txt";
+
+        //Read the text from directly from the test.txt file
+        var reader = new StreamReader(path);
+        var highscore = reader.ReadToEnd();
+        Debug.Log(highscore);
+        reader.Close();
+        return highscore;
     }
 }
