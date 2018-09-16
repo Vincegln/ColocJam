@@ -1,20 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour
+{
     public static GameManager Instance = null;
-    
+
     public int Score = 0;
-    public int[] HighScores = new int[3];
+    public int HighScore = 0;
+
     public int Lives = 0;
-    
-    public int CurrentLevel = 1;
+
+    public int CurrentLevel = 999;
     private List<int> _levelsAvailable = new List<int>();
     private List<int> _levelsDone = new List<int>();
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -29,14 +33,16 @@ public class GameManager : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 
-    public void OnStart()
+    public void Start()
     {
-        for (var i = 1; i < 6; i++) { _levelsAvailable.Add(i);}
-        for (var i = 1; i < 3; i++) { HighScores[i]=0;}
+        for (var i = 1; i < 6; i++)
+        {
+            _levelsAvailable.Add(i);
+        }
 
         Lives = 3;
     }
-    
+
     public void IncreaseScore(int amount)
     {
         Score += amount;
@@ -59,15 +65,11 @@ public class GameManager : MonoBehaviour {
 
     private void CheckHighscores()
     {
-        for (var i = 0; i < 3; i++)
+        if (HighScore < Score)
         {
-            if (Score <= HighScores[i]) continue;
-            HighScores[i] = Score;
-            break;
+            HighScore = Score;
         }
 
-        HighScores = HighScores.OrderByDescending(c => c).ToArray();
-        
         print("New Highscore : " + Score);
     }
 
@@ -76,7 +78,7 @@ public class GameManager : MonoBehaviour {
         Score = 0;
 
         Lives = 3;
-        
+
         ChangeLevel();
     }
 
@@ -84,6 +86,7 @@ public class GameManager : MonoBehaviour {
     {
         _levelsDone.Add(CurrentLevel);
         var levelsToDo = _levelsAvailable.Except(_levelsDone).ToList();
-        SceneManager.LoadScene("Level" + levelsToDo[Random.Range(0, levelsToDo.Count)]);
+        CurrentLevel = levelsToDo[Random.Range(0, levelsToDo.Count)];
+        SceneManager.LoadScene("Level" + CurrentLevel);
     }
 }
