@@ -93,52 +93,61 @@ public class GameManager : MonoBehaviour
     
 	private void Update()
 	{
-		if (_currentKey < _currentCombinaisonLength && _countingDown == 1)
+		if (Database.Lives == 0)
 		{
-			if (_waitedKey == 0)
-			{
-				_waitedKey = _keyCombinaison[_currentKey];
-				Debug.Log(_waitedKey.ToString());
-			
-			}
-			if (Input.anyKeyDown)
-			{
-				if (Input.GetKeyDown(_waitedKey))
-				{
-					_correctKey = 1;
-					StartCoroutine(KeyPressing());
-				}
-				else
-				{
-					_correctKey = 2;
-					StartCoroutine(KeyPressing());
-				}
-			}
+			StopAllCoroutines();
+			SceneManager.LoadScene("GameOver");
 		}
 		else
 		{
-			if (_countingDown == 1)
+			if (_currentKey < _currentCombinaisonLength && _countingDown == 1)
 			{
-				_countingDown = 0;
-				StopAllCoroutines();
-				//TODO : Indicateur Succès niveau
-				Debug.Log("Congrats, good end");
-				IncreaseScore(1);
-				if (Database.LevelTime < 5.0f)
+				if (_waitedKey == 0)
 				{
-					Database.CombinaisonLength += 1;
-					Database.LevelTime = 10.0f;
+					_waitedKey = _keyCombinaison[_currentKey];
+					Debug.Log(_waitedKey.ToString());
+			
 				}
-				else
+				if (Input.anyKeyDown)
 				{
-					Database.LevelTime -= 2.0f;
+					if (Input.GetKeyDown(_waitedKey))
+					{
+						_correctKey = 1;
+						StartCoroutine(KeyPressing());
+					}
+					else
+					{
+						_correctKey = 2;
+						StartCoroutine(KeyPressing());
+					}
 				}
 			}
-			else if (_countingDown == 2)
+			else
 			{
-				DecreaseLife();
+				if (_countingDown == 1)
+				{
+					_countingDown = 0;
+					StopAllCoroutines();
+					//TODO : Indicateur Succès niveau
+					Debug.Log("Congrats, good end");
+					IncreaseScore(1);
+					if (Database.LevelTime < 5.0f)
+					{
+						Database.CombinaisonLength += 1;
+						Database.LevelTime = 10.0f;
+					}
+					else
+					{
+						Database.LevelTime -= 2.0f;
+					}
+					ChangeLevel();
+				}
+				else if (_countingDown == 2)
+				{
+					DecreaseLife();
+				}
+			
 			}
-			ChangeLevel();
 		}
 			
 	}
@@ -157,7 +166,6 @@ public class GameManager : MonoBehaviour
         if (Database.Lives == 0)
         {
             CheckHighscores();
-            SceneManager.LoadScene("GameOver");
         }
     }
 
@@ -294,7 +302,7 @@ public class GameManager : MonoBehaviour
         _keyNamesDictionnary.Add(KeyCode.F11, "F11");
         _keyNamesDictionnary.Add(KeyCode.F12, "F12");
         _keyNamesDictionnary.Add(KeyCode.Space, "␣");
-        _keyNamesDictionnary.Add(KeyCode.Backspace, "Z");
+        _keyNamesDictionnary.Add(KeyCode.Backspace, "⌫");
         _keyNamesDictionnary.Add(KeyCode.Return, "↵");
         _keyNamesDictionnary.Add(KeyCode.RightArrow, "→");
         _keyNamesDictionnary.Add(KeyCode.LeftArrow, "←");
@@ -346,13 +354,15 @@ public class GameManager : MonoBehaviour
         }
         else if (_correctKey == 2)
         {
-            _correctKey = 0;
+	        _correctKey = 0;
             //TODO : Mettre à jour la source image avec touche Fail
             //TODO : Mettre en place le lancement d'un son d'échec de frappe
 	        GetComponent<AudioSource>().Play(); //joue le son associé à l’objet
+	        yield return new WaitForSeconds(0.01f);
+	        _waitedKey = 0;
 	        DecreaseLife();
-            yield return new WaitForSeconds(0.1f);
-            _waitedKey = 0;
+            //yield return new WaitForSeconds(0.1f);
+            
 //			_currentKey++; TODO : Adapter au mode de jeu sélectionné
 		}
 	}
@@ -366,7 +376,6 @@ public class GameManager : MonoBehaviour
 			{
 				_levelTime -= _timerDecrease;
 				Timer.transform.position += new Vector3(_distanceEachDecrease,0,0);
-				Debug.Log(_levelTime);
 				yield return new WaitForSeconds(_timerDecrease);
 			}
 			_countingDown = 2;
