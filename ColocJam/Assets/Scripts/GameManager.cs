@@ -10,8 +10,6 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance = null;
-
     public int Score = 0;
     public int HighScore = 0;
 
@@ -49,23 +47,18 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            _keyCodesDictionnary = new Dictionary<int, KeyCode>();
-            _keyNamesDictionnary = new Dictionary<KeyCode, string>();
-            FillKeyCodesDictionnary();
-            FillKeyNamesDictionnary();
-            _currentCombinaisonLength = 1;
-            _levelTotalTime = 10.0f;
-            _levelTime = 0.0f;
-        }
-        else if (Instance != this)
-        {
-            Destroy(gameObject);
-        }
+		_keyCodesDictionnary = new Dictionary<int, KeyCode>();
+		_keyNamesDictionnary = new Dictionary<KeyCode, string>();
+		FillKeyCodesDictionnary();
+		FillKeyNamesDictionnary();
 
-        DontDestroyOnLoad(gameObject);
+		_currentCombinaisonLength = Database.CombinaisonLength;
+		_levelTotalTime = Database.LevelTime;
+	    Debug.Log("combiL = "+_currentCombinaisonLength);
+	    Debug.Log("totalTime = "+_levelTotalTime);
+		
+		_levelTime = 0.0f;
+        
     }
 
     private void Start()
