@@ -158,20 +158,8 @@ public class GameManager : MonoBehaviour
 
     public void DecreaseLife()
     {
-        GameObject.Find("Life" + (Database.Lives-1)).SetActive(false);
+        GameObject.Find("Life" + (Database.Lives - 1)).SetActive(false);
         Database.Lives -= 1;
-        if (Database.Lives == 0)
-        {
-            CheckHighscores();
-        }
-    }
-
-    private void CheckHighscores()
-    {
-        if (int.Parse(ReadString()) < Database.Score)
-        {
-            WriteString();
-        }
     }
 
     public void ChangeLevel()
@@ -375,32 +363,5 @@ public class GameManager : MonoBehaviour
             _correctKey = 0;
             _waitedKey = 0;
         }
-    }
-	
-    void WriteString()
-    {
-        const string path = "Assets/Resources/highscore.txt";
-
-        //Write some text to the test.txt file
-        File.WriteAllText(path,Database.Score.ToString());
-
-        //Re-import the file to update the reference in the editor
-        Resources.Load(path); 
-        var asset = (TextAsset) Resources.Load("highscore");
-
-        //Print the text from the file
-//        Debug.Log(asset.text);
-    }
-
-    public string ReadString()
-    {
-        const string path = "Assets/Resources/highscore.txt";
-
-        //Read the text from directly from the test.txt file
-        var reader = new StreamReader(path);
-        var highscore = reader.ReadToEnd();
-//        Debug.Log(highscore);
-        reader.Close();
-        return highscore;
     }
 }
