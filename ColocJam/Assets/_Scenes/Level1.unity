@@ -3690,7 +3690,6 @@ MonoBehaviour:
   _timerDecrease: 0.03
   scenes: []
   fond: {fileID: 0}
-  CurrentScene: 0
   Inputs:
   - {fileID: 998106804}
   - {fileID: 1574815270}
@@ -3716,7 +3715,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: b449bb6999c609844a78dc41c58069eb, type: 3}
+  m_audioClip: {fileID: 8300000, guid: ad88b62a7e1328a42bcd1730eed65ef5, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
