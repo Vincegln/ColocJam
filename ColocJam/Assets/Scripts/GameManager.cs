@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -59,6 +59,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+	    for (int i = 2; i >= 0; i--)
+	    {
+		    if (Database.Lives <= i)
+		    {
+			    GameObject.Find("Life"+(i)).SetActive(false);
+		    }
+	    }
         _distanceEachDecrease = (36.0f * _timerDecrease) / _levelTotalTime;
 	    GenerateCombinaison(NUMBEROFKEY, _currentCombinaisonLength);
 	    _currentKey = 0;
@@ -160,9 +167,6 @@ public class GameManager : MonoBehaviour
         {
 	        WriteString();
         }
-
-
-        print("New Highscore : " + Database.Score);
     }
 
     public void ChangeLevel()
