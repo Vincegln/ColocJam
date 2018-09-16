@@ -290,7 +290,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &344893099
 Transform:
   m_ObjectHideFlags: 0
@@ -312,10 +312,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 344893098}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63ac5030e7db8ce4c871ffb93e9f75a2, type: 3}
+  m_Script: {fileID: 11500000, guid: 57d450d853914d54cba065202538e292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScoreLabel: {fileID: 0}
+  Score: {fileID: 1068405304}
+  Highscore: {fileID: 2091423967}
 --- !u!1 &688107962
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,7 +473,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!64 &831369744
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -572,11 +573,11 @@ RectTransform:
   m_Father: {fileID: 153568616}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.638e-12, y: 146}
-  m_SizeDelta: {x: 1406.8, y: 154.6}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 256.6, y: -405}
+  m_SizeDelta: {x: 1406.8, y: 154.59998}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &1068405304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -598,7 +599,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 0eef07574e5d9154cbb9614a19803e78, type: 3}
-    m_FontSize: 60
+    m_FontSize: 96
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 6
@@ -789,17 +790,17 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2091423965}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -4440.9995}
+  m_LocalPosition: {x: 0, y: 0, z: -4441}
   m_LocalScale: {x: 0.9998457, y: 0.9998457, z: 0.9998457}
   m_Children: []
   m_Father: {fileID: 153568616}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1e-15, y: -180.4}
-  m_SizeDelta: {x: 1406.8, y: 498.4}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 262, y: -636.67}
+  m_SizeDelta: {x: 1406.8, y: 498.40002}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &2091423967
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -832,13 +833,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 0.8
-  m_Text: 'Highscores :
+  m_Text: 'Highscore :
 
-    AWB : 785
-
-    BHG : 645
-
-    GHH : 523'
+    523'
 --- !u!222 &2091423968
 CanvasRenderer:
   m_ObjectHideFlags: 0
