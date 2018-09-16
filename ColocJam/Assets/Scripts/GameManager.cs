@@ -37,8 +37,14 @@ public class GameManager : MonoBehaviour
 
     private int _currentKey; //Position touche attendue
     private KeyCode _waitedKey; // code touche attendue
+	
+	public List<Image> scenes = new List<Image>();
 
-    private int _correctKey; // booléen de merde pour savoir si on s'est trompé ou non
+	public Image fond;
+
+	public int CurrentScene;
+
+	private int _correctKey; // booléen de merde pour savoir si on s'est trompé ou non
     private int _countingDown; // booléen de merde 2 pour savoir si le temps est écoulé ou non
 
 	public GameObject[] Inputs;
@@ -96,40 +102,36 @@ public class GameManager : MonoBehaviour
 		StartCoroutine(CountDown(_levelTotalTime));
     }
 
-    private void Update()
-    {
-        if (_currentKey < _currentCombinaisonLength && _countingDown == 1)
-        {
-            if (_waitedKey == 0)
-            {
-                _waitedKey = _keyCombinaison[_currentKey];
-                Debug.Log(_waitedKey.ToString());
-            }
-
-            if (!Input.anyKeyDown) return;
-            if (Input.GetKeyDown(_waitedKey))
-            {
-                _correctKey = 1;
-                StartCoroutine(KeyPressing());
-            }
-            else
-            {
-                _correctKey = 2;
-                StartCoroutine(KeyPressing());
-            }
-        }
-        else
-        {
-            if (_countingDown != 1) return;
-            _countingDown = 0;
-            StopAllCoroutines();
-            //TODO : Indicateur Succès niveau
-            Debug.Log("Congrats, good end");
-
-            //TODO : gestion changement niveau + changement difficulté
-        }
-    }
-
+			if (Input.anyKeyDown)
+			{
+				if (Input.GetKeyDown(_waitedKey))
+				{
+					_correctKey = 1;
+					StartCoroutine(KeyPressing());
+				}
+				else
+				{
+					_correctKey = 2;
+					StartCoroutine(KeyPressing());
+				}
+			}
+		}
+		else
+		{
+			if (_countingDown == 1)
+			{
+				_countingDown = 0;
+				StopAllCoroutines();
+				//TODO : Indicateur Succès niveau
+				Debug.Log("Congrats, good end");
+			}
+			
+			
+			//TODO : gestion changement niveau + changement difficulté
+		}
+			
+	}
+	
     public void IncreaseScore(int amount)
     {
         Score += amount;
