@@ -27,7 +27,7 @@ public class GameOver : MonoBehaviour
 
     public void MenuHandleClick()
     {
-        Application.Quit();
+        SceneManager.LoadScene("Menu");
     }
     
     public string ReadString()
