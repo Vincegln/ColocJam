@@ -10,10 +10,6 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public int Score = 0;
-    public int HighScore = 0;
-
-    public int Lives = 0;
 	private int _currentCombinaisonLength;
 	private float _levelTime;
 	private float _levelTotalTime;
@@ -63,9 +59,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        HighScore = int.Parse(ReadString());
-        Lives = 3;
-	    _distanceEachDecrease = (36.0f * _timerDecrease) / _levelTotalTime;
+        _distanceEachDecrease = (36.0f * _timerDecrease) / _levelTotalTime;
 	    GenerateCombinaison(NUMBEROFKEY, _currentCombinaisonLength);
 	    _currentKey = 0;
 	    string letterDisplayed;
@@ -122,54 +116,52 @@ public class GameManager : MonoBehaviour
 				StopAllCoroutines();
 				//TODO : Indicateur Succès niveau
 				Debug.Log("Congrats, good end");
-				ChangeLevel();
+				IncreaseScore(1);
+				if (Database.LevelTime < 5.0f)
+				{
+					Database.CombinaisonLength += 1;
+					Database.LevelTime = 10;
+				}
+				else
+				{
+					Database.LevelTime -= 2.0f;
+				}
 			}
-			
-			
-			//TODO : gestion changement niveau + changement difficulté
+			else if (_countingDown == 2)
+			{
+				DecreaseLife();
+			}
+			ChangeLevel();
 		}
 			
 	}
 	
     public void IncreaseScore(int amount)
     {
-        Score += amount;
+        Database.Score += amount;
 
-        print("New Score : " + Score.ToString());
+        print("New Score : " + Database.Score);
     }
 
     public void DecreaseLife()
     {
-        if (Lives <= 0)
+	    Database.Lives -= 1;
+        if (Database.Lives == 0)
         {
             CheckHighscores();
             SceneManager.LoadScene("GameOver");
-        }
-        else
-        {
-            Lives -= 1;
         }
     }
 
     private void CheckHighscores()
     {
-        if (HighScore < Score)
+        if (int.Parse(ReadString()) < Database.Score)
         {
-            HighScore = Score;
+	        WriteString();
         }
 
-        WriteString(HighScore.ToString());
 
-        print("New Highscore : " + Score);
-    }
-
-    public void Reset()
-    {
-        Score = 0;
-
-        Lives = 3;
-
-        ChangeLevel();
+        print("New Highscore : " + Database.Score);
     }
 
     public void ChangeLevel()
@@ -353,6 +345,7 @@ public class GameManager : MonoBehaviour
             //TODO : Mettre à jour la source image avec touche Fail
             //TODO : Mettre en place le lancement d'un son d'échec de frappe
 	        GetComponent<AudioSource>().Play(); //joue le son associé à l’objet
+	        DecreaseLife();
             yield return new WaitForSeconds(0.1f);
             _waitedKey = 0;
 //			_currentKey++; TODO : Adapter au mode de jeu sélectionné
@@ -381,14 +374,12 @@ public class GameManager : MonoBehaviour
 		}
 	}
 	
-	void WriteString(string lHighscore)
+	void WriteString()
 	{
 		const string path = "Assets/Resources/highscore.txt";
 
 		//Write some text to the test.txt file
-		var writer = new StreamWriter(path, true);
-		writer.WriteLine(lHighscore);
-		writer.Close();
+		File.WriteAllText(path,Database.Score.ToString());
 
 		//Re-import the file to update the reference in the editor
 		Resources.Load(path); 

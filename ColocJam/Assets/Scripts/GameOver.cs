@@ -11,6 +11,9 @@ public class GameOver : MonoBehaviour
     public Button RetryButton;
     public Button MenuButton;
 
+    private const int COMBINAISONINIT = 1;
+    private const float LEVELTIMEINIT = 10.0f;
+    
     private void Start()
     {
         RetryButton.onClick.AddListener(RetryHandleClick);
@@ -22,6 +25,9 @@ public class GameOver : MonoBehaviour
     public void RetryHandleClick()
     {
         Database.Score = 0;
+        Database.CombinaisonLength = COMBINAISONINIT;
+        Database.LevelTime = LEVELTIMEINIT;
+        Database.Lives = 3;
         SceneManager.LoadScene("Level1");
     }
 
