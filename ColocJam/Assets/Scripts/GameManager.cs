@@ -37,7 +37,13 @@ public class GameManager : MonoBehaviour
     private int _currentKey; //Position touche attendue
     private KeyCode _waitedKey; // code touche attendue
 	
-    private int _correctKey; // booléen de merde pour savoir si on s'est trompé ou non
+	public List<Image> scenes = new List<Image>();
+
+	public Image fond;
+
+	public int CurrentScene;
+
+	private int _correctKey; // booléen de merde pour savoir si on s'est trompé ou non
     private int _countingDown; // booléen de merde 2 pour savoir si le temps est écoulé ou non
 
 	public GameObject[] Inputs;
@@ -67,7 +73,6 @@ public class GameManager : MonoBehaviour
     public void Start()
     {
         for (var i = 1; i < 6; i++) { _levelsAvailable.Add(i);}
-        for (var i = 1; i < 3; i++) { HighScores[i]=0;}
         Lives = 3;
 	    
 	    GenerateCombinaison(NUMBEROFKEY, _currentCombinaisonLength);
@@ -127,6 +132,7 @@ public class GameManager : MonoBehaviour
 				//TODO : Indicateur Succès niveau
 				Debug.Log("Congrats, good end");
 			}
+			
 			
 			//TODO : gestion changement niveau + changement difficulté
 		}
