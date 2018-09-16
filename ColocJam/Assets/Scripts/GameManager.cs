@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
 	private int _currentCombinaisonLength;
 	private float _levelTime;
 	private float _levelTotalTime;
+	private float _distanceEachDecrease;
+	public float _timerDecrease = 0.03f;
 
     public int CurrentLevel = 999;
     private List<int> _levelsAvailable = new List<int>();
@@ -47,6 +49,8 @@ public class GameManager : MonoBehaviour
     private int _countingDown; // booléen de merde 2 pour savoir si le temps est écoulé ou non
 
 	public GameObject[] Inputs;
+
+	public GameObject Timer;
     // ----------
     
     private void Awake()
@@ -73,8 +77,9 @@ public class GameManager : MonoBehaviour
     public void Start()
     {
         for (var i = 1; i < 6; i++) { _levelsAvailable.Add(i);}
+        //for (var i = 1; i < 3; i++) { HighScores[i]=0;}
         Lives = 3;
-	    
+	    _distanceEachDecrease = (36.0f * _timerDecrease) / _levelTotalTime;
 	    GenerateCombinaison(NUMBEROFKEY, _currentCombinaisonLength);
 	    _currentKey = 0;
 	    string letterDisplayed;
@@ -364,9 +369,10 @@ public class GameManager : MonoBehaviour
 			_levelTime = timeToWaitIntoScene;
 			while (_levelTime > 0.0f)
 			{
-				_levelTime -= 0.1f;
+				_levelTime -= _timerDecrease;
+				Timer.transform.position += new Vector3(_distanceEachDecrease,0,0);
 				Debug.Log(_levelTime);
-				yield return new WaitForSeconds(0.1f);
+				yield return new WaitForSeconds(_timerDecrease);
 			}
 			_countingDown = 2;
 			_levelTime = 0.0f;
