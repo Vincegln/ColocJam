@@ -3406,7 +3406,7 @@ MonoBehaviour:
   HighScores: 000000000000000000000000
   Lives: 0
   CurrentLevel: 1
-  inputs:
+  Inputs:
   - {fileID: 998106804}
   - {fileID: 1574815270}
   - {fileID: 1696810001}
