@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
 				if (Database.LevelTime < 5.0f)
 				{
 					Database.CombinaisonLength += 1;
-					Database.LevelTime = 10;
+					Database.LevelTime = 10.0f;
 				}
 				else
 				{
@@ -145,6 +145,7 @@ public class GameManager : MonoBehaviour
 
     public void DecreaseLife()
     {
+	    GameObject.Find("Life" + (Database.Lives-1)).SetActive(false);
 	    Database.Lives -= 1;
         if (Database.Lives == 0)
         {
