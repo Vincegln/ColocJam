@@ -507,6 +507,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayButton: {fileID: 1603672878}
   ExitButton: {fileID: 31734741}
+  Highscore: {fileID: 861875473}
 --- !u!1 &479824282
 GameObject:
   m_ObjectHideFlags: 0
@@ -1095,9 +1096,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Score: 0
-  HighScore: 0
+  HighScore: 36
   Lives: 0
   CurrentLevel: 1
+  Inputs: []
 --- !u!1 &1603672876
 GameObject:
   m_ObjectHideFlags: 0

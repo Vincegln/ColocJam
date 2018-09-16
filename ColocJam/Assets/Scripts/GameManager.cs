@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -64,9 +66,10 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void Start()
+    private void Start()
     {
         for (var i = 1; i < 6; i++) { _levelsAvailable.Add(i);}
+	    HighScore = int.Parse(ReadString());
         Lives = 3;
 	    
 	    GenerateCombinaison(NUMBEROFKEY, _currentCombinaisonLength);
@@ -153,6 +156,8 @@ public class GameManager : MonoBehaviour
             HighScore = Score;
         }
 
+	    WriteString(HighScore.ToString());
+	    
         print("New Highscore : " + Score);
     }
 
@@ -361,6 +366,35 @@ public class GameManager : MonoBehaviour
 		yield return new WaitForSeconds(0.01f);
 		_correctKey = 0;
 		_waitedKey = 0;
+	}
+	
+	void WriteString(string lHighscore)
+	{
+		const string path = "Assets/Resources/highscore.txt";
+
+		//Write some text to the test.txt file
+		var writer = new StreamWriter(path, true);
+		writer.WriteLine(lHighscore);
+		writer.Close();
+
+		//Re-import the file to update the reference in the editor
+		AssetDatabase.ImportAsset(path); 
+		var asset = (TextAsset) Resources.Load("highscore");
+
+		//Print the text from the file
+		Debug.Log(asset.text);
+	}
+
+	public string ReadString()
+	{
+		const string path = "Assets/Resources/highscore.txt";
+
+		//Read the text from directly from the test.txt file
+		var reader = new StreamReader(path);
+		var highscore = reader.ReadToEnd();
+		Debug.Log(highscore);
+		reader.Close();
+		return highscore;
 	}
 	
 }

@@ -4,10 +4,11 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class MenuButtons : MonoBehaviour {
+public class Menu : MonoBehaviour {
     
 	public Button PlayButton;
 	public Button ExitButton;
+	public Text Highscore;
     
 	// Use this for initialization
 	private void Start () 
@@ -15,6 +16,7 @@ public class MenuButtons : MonoBehaviour {
 		PlayButton.onClick.AddListener (PlayHandleClick);
 		ExitButton.onClick.AddListener (ExitHandleClick);
 		GameManager.Instance.CurrentLevel = 999;
+		Highscore.text = "Highscore :\r\n" + GameManager.Instance.ReadString();
 	}
 
 	public void PlayHandleClick()
