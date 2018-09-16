@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -21,10 +22,6 @@ public class GameManager : MonoBehaviour
 	private float _distanceEachDecrease;
 	public float _timerDecrease = 0.03f;
 
-    public int CurrentLevel = 999;
-    private List<int> _levelsAvailable = new List<int>();
-    private List<int> _levelsDone = new List<int>();
-
     // --------
 
     private const int NUMBEROFKEY = 55; // nb max de touches
@@ -39,11 +36,9 @@ public class GameManager : MonoBehaviour
     private KeyCode _waitedKey; // code touche attendue
 	
 	public List<Image> scenes = new List<Image>();
-
 	public Image fond;
-
-	public int CurrentScene;
-
+	private Image CurrentScene;
+	
 	private int _correctKey; // booléen de merde pour savoir si on s'est trompé ou non
     private int _countingDown; // booléen de merde 2 pour savoir si le temps est écoulé ou non
 
@@ -75,7 +70,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        for (var i = 1; i < 6; i++) { _levelsAvailable.Add(i);}
+        //for (var i = 1; i < 6; i++) { _levelsAvailable.Add(i);}
         HighScore = int.Parse(ReadString());
         Lives = 3;
 	    _distanceEachDecrease = (36.0f * _timerDecrease) / _levelTotalTime;
@@ -186,10 +181,15 @@ public class GameManager : MonoBehaviour
 
     public void ChangeLevel()
     {
-        _levelsDone.Add(CurrentLevel);
-        var levelsToDo = _levelsAvailable.Except(_levelsDone).ToList();
-        CurrentLevel = levelsToDo[Random.Range(0, levelsToDo.Count)];
-        SceneManager.LoadScene("Level" + CurrentLevel);
+	    Image transitionScene;
+	    transitionScene = CurrentScene;
+	    while (CurrentScene == transitionScene)
+         {
+		    CurrentScene = scenes[Random.Range(0, scenes.Count)];
+		 }
+
+	    fond.sprite = CurrentScene.sprite;
+	    
     }
 
     private void FillKeyCodesDictionnary()

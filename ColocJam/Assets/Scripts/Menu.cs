@@ -12,7 +12,6 @@ public class Menu : MonoBehaviour
     {
         PlayButton.onClick.AddListener(PlayHandleClick);
         ExitButton.onClick.AddListener(ExitHandleClick);
-        GameManager.Instance.CurrentLevel = 999;
         Highscore.text = "Highscore :\r\n" + GameManager.Instance.ReadString();
     }
 
