@@ -395,7 +395,7 @@ public class GameManager : MonoBehaviour
 		writer.Close();
 
 		//Re-import the file to update the reference in the editor
-		AssetDatabase.ImportAsset(path); 
+		Resources.Load(path); 
 		var asset = (TextAsset) Resources.Load("highscore");
 
 		//Print the text from the file
