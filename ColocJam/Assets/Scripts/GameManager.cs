@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour {
     public static GameManager Instance = null;
     
     public int Score = 0;
-    public int HighScore = 0;
+    public int[] HighScores = new int[3];
     public int Lives = 0;
     
     public int CurrentLevel = 1;
@@ -31,10 +31,8 @@ public class GameManager : MonoBehaviour {
 
     public void OnStart()
     {
-        for (var i = 1; i < 6; i++)
-        {
-            _levelsAvailable.Add(i);
-        }
+        for (var i = 1; i < 6; i++) { _levelsAvailable.Add(i);}
+        for (var i = 1; i < 3; i++) { HighScores[i]=0;}
 
         Lives = 3;
     }
@@ -44,17 +42,13 @@ public class GameManager : MonoBehaviour {
         Score += amount;
 
         print("New Score : " + Score.ToString());
-
-        if (!(Score > HighScore)) return;
-
-        HighScore = Score;
-        print("New Highscore : " + HighScore);
     }
 
     public void DecreaseLife()
     {
         if (Lives <= 0)
         {
+            CheckHighscores();
             SceneManager.LoadScene("GameOver");
         }
         else
@@ -62,7 +56,21 @@ public class GameManager : MonoBehaviour {
             Lives -= 1;
         }
     }
-    
+
+    private void CheckHighscores()
+    {
+        for (var i = 0; i < 3; i++)
+        {
+            if (Score <= HighScores[i]) continue;
+            HighScores[i] = Score;
+            break;
+        }
+
+        HighScores = HighScores.OrderByDescending(c => c).ToArray();
+        
+        print("New Highscore : " + Score);
+    }
+
     public void Reset()
     {
         Score = 0;

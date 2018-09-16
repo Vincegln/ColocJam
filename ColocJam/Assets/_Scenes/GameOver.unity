@@ -797,8 +797,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.638e-12, y: 146}
-  m_SizeDelta: {x: 1406.8, y: 154.6}
+  m_AnchoredPosition: {x: -1e-15, y: -180.4}
+  m_SizeDelta: {x: 1406.8, y: 498.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2091423967
 MonoBehaviour:
@@ -826,13 +826,19 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 6
     m_MaxSize: 110
-    m_Alignment: 4
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
-    m_LineSpacing: 1
-  m_Text: 'Score : 246'
+    m_LineSpacing: 0.8
+  m_Text: 'Highscores :
+
+    AWB : 785
+
+    BHG : 645
+
+    GHH : 523'
 --- !u!222 &2091423968
 CanvasRenderer:
   m_ObjectHideFlags: 0
