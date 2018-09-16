@@ -196,6 +196,7 @@ public class QTESys : MonoBehaviour
 
 		return result;
 	}
+	
 	void Update()
 	{
 		if (_waitedKey == 0)
