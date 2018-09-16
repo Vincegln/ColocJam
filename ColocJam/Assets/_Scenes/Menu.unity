@@ -389,10 +389,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 344893098}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63ac5030e7db8ce4c871ffb93e9f75a2, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c3e71fb72927ab4fad76ec7c7d4372b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScoreLabel: {fileID: 0}
+  PlayButton: {fileID: 1603672878}
+  HighscoreButton: {fileID: 662755295}
+  CreditsButton: {fileID: 1348455633}
+  ExitButton: {fileID: 1113847610}
 --- !u!1 &641714498
 GameObject:
   m_ObjectHideFlags: 0
@@ -480,7 +483,7 @@ GameObject:
   - component: {fileID: 662755296}
   - component: {fileID: 662755295}
   m_Layer: 5
-  m_Name: HighScore
+  m_Name: HighScoreButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -502,7 +505,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -36, y: 144}
+  m_AnchoredPosition: {x: -36, y: -91.000015}
   m_SizeDelta: {x: 568.3, y: 74.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &662755295
@@ -893,7 +896,7 @@ GameObject:
   - component: {fileID: 1113847611}
   - component: {fileID: 1113847610}
   m_Layer: 5
-  m_Name: Exit
+  m_Name: ExitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -915,7 +918,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -36, y: -120}
+  m_AnchoredPosition: {x: -36, y: -355}
   m_SizeDelta: {x: 568.3, y: 74.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1113847610
@@ -1034,7 +1037,7 @@ GameObject:
   - component: {fileID: 1348455634}
   - component: {fileID: 1348455633}
   m_Layer: 5
-  m_Name: Credits
+  m_Name: CreditsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1056,7 +1059,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -36, y: 12}
+  m_AnchoredPosition: {x: -36, y: -223.00002}
   m_SizeDelta: {x: 568.3, y: 74.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1348455633
@@ -1265,7 +1268,7 @@ GameObject:
   - component: {fileID: 1603672879}
   - component: {fileID: 1603672878}
   m_Layer: 5
-  m_Name: Play
+  m_Name: PlayButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1287,7 +1290,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -36, y: 276}
+  m_AnchoredPosition: {x: -36, y: 41}
   m_SizeDelta: {x: 568.3, y: 74.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1603672878
@@ -1325,7 +1328,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 1603672879}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -1397,7 +1400,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 450}
+  m_AnchoredPosition: {x: 0, y: 342}
   m_SizeDelta: {x: 751.5, y: 111.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1882216467
