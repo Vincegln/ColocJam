@@ -102,6 +102,17 @@ public class GameManager : MonoBehaviour
 		StartCoroutine(CountDown(_levelTotalTime));
     }
 
+    
+	private void Update()
+	{
+		if (_currentKey < _currentCombinaisonLength && _countingDown == 1)
+		{
+			if (_waitedKey == 0)
+			{
+				_waitedKey = _keyCombinaison[_currentKey];
+				Debug.Log(_waitedKey.ToString());
+			
+			}
 			if (Input.anyKeyDown)
 			{
 				if (Input.GetKeyDown(_waitedKey))
@@ -374,4 +385,32 @@ public class GameManager : MonoBehaviour
 		}
 	}
 	
+	void WriteString(string lHighscore)
+	{
+		const string path = "Assets/Resources/highscore.txt";
+
+		//Write some text to the test.txt file
+		var writer = new StreamWriter(path, true);
+		writer.WriteLine(lHighscore);
+		writer.Close();
+
+		//Re-import the file to update the reference in the editor
+		AssetDatabase.ImportAsset(path); 
+		var asset = (TextAsset) Resources.Load("highscore");
+
+		//Print the text from the file
+		Debug.Log(asset.text);
+	}
+
+	public string ReadString()
+	{
+		const string path = "Assets/Resources/highscore.txt";
+
+		//Read the text from directly from the test.txt file
+		var reader = new StreamReader(path);
+		var highscore = reader.ReadToEnd();
+		Debug.Log(highscore);
+		reader.Close();
+		return highscore;
+	}
 }
